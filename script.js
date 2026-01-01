@@ -1,11 +1,19 @@
 // 1. 要素を取得する（Azureのログから特定のIDを探すイメージです）
-const button = document.getElementById('alert-button');
-const messageArea = document.getElementById('message-area');
+const addButton = document.getElementById('add-button');
+const todoInput = document.getElementById('todo-input');
+const todoList = document.getElementById('todo-list');
 
-// 2. ボタンがクリックされた時の動作を決める（イベントリスナー）
-button.addEventListener('click', () => {
-    // 3. メッセージを書き換える（DOM操作）
-    messageArea.textContent = 'JavaScriptが動きました！おめでとうございます！';
-    messageArea.style.color = 'red';
-    messageArea.style.fontWeight = 'bold';
+addButton.addEventListener('click', () => {
+    const taskText = todoInput.value; // 入力された文字を取得
+
+    if (taskText !== "") { // 空っぽじゃない時だけ実行
+        const li = document.createElement('li'); // 新しいリスト項目(li)を作る
+        li.textContent = taskText; // リスト項目に文字を入れる
+        
+        todoList.appendChild(li); // ul（リスト）の中にliを追加する
+        
+        todoInput.value = ""; // 入力欄を空にする
+    } else {
+        alert("タスクを入力してください！");
+    }
 });
