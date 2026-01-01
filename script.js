@@ -4,16 +4,26 @@ const todoInput = document.getElementById('todo-input');
 const todoList = document.getElementById('todo-list');
 
 addButton.addEventListener('click', () => {
-    const taskText = todoInput.value; // 入力された文字を取得
+    const taskText = todoInput.value;
 
-    if (taskText !== "") { // 空っぽじゃない時だけ実行
-        const li = document.createElement('li'); // 新しいリスト項目(li)を作る
-        li.textContent = taskText; // リスト項目に文字を入れる
-        
-        todoList.appendChild(li); // ul（リスト）の中にliを追加する
-        
-        todoInput.value = ""; // 入力欄を空にする
-    } else {
-        alert("タスクを入力してください！");
+    if (taskText !== "") {
+        const li = document.createElement('li');
+        li.textContent = taskText;
+
+        // --- ここから追加：削除ボタンを作る ---
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = '削除';
+        deleteButton.style.marginLeft = '10px';
+
+        // 削除ボタンが押された時の動作
+        deleteButton.addEventListener('click', () => {
+            li.remove(); // そのリスト項目(li)自体を消す
+        });
+
+        li.appendChild(deleteButton); // リスト項目の中に削除ボタンを入れる
+        // --- ここまで ---
+
+        todoList.appendChild(li);
+        todoInput.value = "";
     }
 });
