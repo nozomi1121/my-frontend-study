@@ -1,37 +1,21 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import './App.css'
-
-// 1. 型の定義（インターフェース）
-interface User {
-  id: number;
-  name: string;
-}
+import { TodoItem } from './TodoItem'
+import { UserList } from './UserList' // 👈 追加
 
 function App() {
-  // 2. 状態（State）の定義
   const [todos, setTodos] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
-  const [users, setUsers] = useState<User[]>([]);
 
-  // 3. APIからデータを取る
-  useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/users')
-      .then(res => res.json())
-      .then(data => setUsers(data));
-  }, []);
+  // ★ App.tsx から User 関連の State や useEffect が消えてスッキリ！
 
-  // --- 追加・修正した関数 ---
-
-  // ToDoを追加する関数
   const addTodo = () => {
-    // trim()を使うことで、空白だけの入力も防ぎます
     if (inputValue.trim() !== "") {
       setTodos([...todos, inputValue]);
       setInputValue("");
     }
   };
 
-  // 指定した番号（index）のToDoを消す関数
   const deleteTodo = (index: number) => {
     const newTodos = todos.filter((_, i) => i !== index);
     setTodos(newTodos);
@@ -45,14 +29,8 @@ function App() {
         <input 
           type="text" 
           value={inputValue}
-          // 文字が変わるたびにStateを更新
           onChange={(e) => setInputValue(e.target.value)} 
-          // ★ Enterキーが押されたら追加する機能
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              addTodo();
-            }
-          }}
+          onKeyDown={(e) => e.key === 'Enter' && addTodo()}
           placeholder="タスクを入力..."
         />
         <button onClick={addTodo}>追加</button>
@@ -60,34 +38,12 @@ function App() {
 
       <ul>
         {todos.map((todo, index) => (
-          <li key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-            <span>{todo}</span>
-            {/* ★ 削除ボタン */}
-            <button 
-              onClick={() => deleteTodo(index)} 
-              style={{ 
-                marginLeft: '10px', 
-                padding: '4px 12px', 
-                backgroundColor: '#ff4d4f', 
-                fontSize: '0.8rem',
-                borderRadius: '4px'
-              }}
-            >
-              削除
-            </button>
-          </li>
+          <TodoItem key={index} todo={todo} index={index} onDelete={deleteTodo} />
         ))}
       </ul>
 
-      <hr />
-      <h3>API取得ユーザー</h3>
-      <ul>
-        {users.map(user => (
-          <li key={user.id} style={{ color: '#0078d4', textAlign: 'left' }}>
-            👤 {user.name}
-          </li>
-        ))}
-      </ul>
+      {/* ★ 外部データを表示する機能は、この一行を置くだけ！ */}
+      <UserList />
     </div>
   )
 }
