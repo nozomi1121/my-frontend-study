@@ -2,14 +2,18 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>自己紹介</title>
+    <title>マイ ToDo リスト</title>
     <style>
-        body { background-color: #f0f8ff; font-family: sans-serif; text-align: center; }
+        body { background-color: #f0f8ff; font-family: sans-serif; text-align: center; padding-top: 50px; }
         h1 { color: #333; }
-        .profile-card { border: 1px solid #ccc; padding: 20px; border-radius: 10px; background: white; display: inline-block; }
+        .profile-card { border: 1px solid #ccc; padding: 20px; border-radius: 10px; background: white; display: inline-block; min-width: 300px; }
+        input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 8px 16px; cursor: pointer; }
+        #message-area { margin-top: 20px; font-weight: bold; color: #0078d4; border-top: 1px solid #eee; padding-top: 10px; }
     </style>
 </head>
 <body>
+
 <div class="profile-card">
     <h1>マイ ToDo リスト</h1>
     
@@ -18,8 +22,10 @@
     
     <ul id="todo-list" style="text-align: left; margin-top: 20px;">
         </ul>
+
+    <p id="message-area">データを読み込み中...</p>    
 </div>
-<p id="message-area"></p></div>
+
 <script src="script.js"></script>
 </body>
 </html>
