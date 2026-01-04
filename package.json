@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/nozomi1121/my-frontend-study#readme",
   "devDependencies": {
+    "gh-pages": "^6.3.0",
     "typescript": "^5.9.3"
   }
 }

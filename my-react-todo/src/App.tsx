@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect} from 'react'  // useEffect を追加
 import './App.css'
 import { TodoItem } from './TodoItem'
 import { UserList } from './UserList' // 👈 追加
@@ -14,10 +14,26 @@ interface Todo {
 
 // App.tsx 内
 function App() {
-  // string[] から Todo[] (さっき作ったインターフェースの配列) に変更
-  const [todos, setTodos] = useState<Todo[]>([]); 
+  // 1. 【読み込み】useStateの（）の中で直接LocalStorageを見に行く
+  // これにより、起動した瞬間にデータが入った状態でスタートできます。
+  const [todos, setTodos] = useState<Todo[]>(() => {
+    const savedTodos = localStorage.getItem('my-todos');
+    // データがあればパース（復元）し、なければ空配列 [] を返す
+    return savedTodos ? (JSON.parse(savedTodos) as Todo[]) : [];
+  });
+
   const [inputValue, setInputValue] = useState("");
 
+  // 2. 【保存】データの変更を監視して、自動でLocalStorageに書き込む
+  // todos が追加・削除・チェックされるたびに、この魔法が発動します。
+  useEffect(() => {
+    localStorage.setItem('my-todos', JSON.stringify(todos));
+  }, [todos]);
+
+  // ※ ここにあった「魔法A（読み込み用のuseEffect）」は、1番の処理に統合したので削除してください！
+
+
+  
   // App.tsx 内
 
 const addTodo = () => {
