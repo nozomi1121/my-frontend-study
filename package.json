@@ -1,25 +1,23 @@
 {
-  "name": "my-frontend-study",
-  "version": "1.0.0",
-  "description": "",
-  "main": "script.js",
+  "name": "my-react-todo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nozomi1121/my-frontend-study.git"
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "framer-motion": "11.0.8"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/nozomi1121/my-frontend-study/issues"
-  },
-  "homepage": "https://github.com/nozomi1121/my-frontend-study#readme",
   "devDependencies": {
-    "gh-pages": "^6.3.0",
-    "typescript": "^5.9.3"
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0"
   }
 }

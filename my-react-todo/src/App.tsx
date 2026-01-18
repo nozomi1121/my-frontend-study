@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import './App.css'
-import { TodoItem } from './TodoItem'
-import { UserList } from './UserList'
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import './App.css';
+import { TodoItem } from './TodoItem';
 
 interface Todo {
   id: number;
@@ -22,30 +22,22 @@ function App() {
     localStorage.setItem('my-todos', JSON.stringify(todos));
   }, [todos]);
 
+  const validate = (value: string) => {
+    if (value.length === 0) return "";
+    if (value.length < 2) return "2文字以上入力してください";
+    if (value.length > 20) return "20文字以内で入力してください";
+    return "";
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    
-    // 【確認用】これがコンソールに出るはずです
-    console.log("現在の入力値:", value, "文字数:", value.length);
-    
     setInputValue(value);
-
-    // バリデーション：空文字はエラーではないが、ボタンは押せない状態
-    if (value.length === 0) {
-      setErrorMsg("");
-    } else if (value.length < 2) {
-      setErrorMsg("2文字以上入力してください");
-    } else if (value.length > 20) {
-      setErrorMsg("20文字以内で入力してください");
-    } else {
-      setErrorMsg("");
-    }
+    setErrorMsg(validate(value));
   };
 
   const addTodo = () => {
     const trimmedValue = inputValue.trim();
-    // 最終チェック
-    if (trimmedValue.length >= 2 && trimmedValue.length <= 20 && errorMsg === "") {
+    if (trimmedValue.length >= 2 && trimmedValue.length <= 20) {
       const newTodo: Todo = {
         id: Date.now(),
         text: trimmedValue,
@@ -53,7 +45,7 @@ function App() {
       };
       setTodos([...todos, newTodo]);
       setInputValue("");
-      setErrorMsg(""); 
+      setErrorMsg("");
     }
   };
 
@@ -72,25 +64,33 @@ function App() {
       <div style={{ marginBottom: '30px', textAlign: 'left' }}>
         <div style={{ display: 'flex', gap: '8px' }}>
           <input
-            id="todo-input"
             type="text"
             value={inputValue}
             onChange={handleInputChange}
+            onKeyDown={(e) => {
+              // ★ ここがポイント：IME（変換）中ではない時だけ、Enterを受け付ける
+              if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+                e.preventDefault();
+                addTodo();
+              }
+            }}
             placeholder="タスクを入力..."
-            // 【重要】ブラウザ側でも21文字以上打てないようにガード
-            maxLength={25} 
             style={{ 
               border: errorMsg ? '2px solid red' : '1px solid #ddd',
               flex: '1',
-              padding: '8px'
+              padding: '8px',
+              borderRadius: '4px',
+              outline: 'none'
             }}
           />
           <button 
             type="button"
             onClick={addTodo} 
-            // ボタンの活性化条件を整理
             disabled={errorMsg !== "" || inputValue.trim().length < 2 || inputValue.trim().length > 20}
-            style={{ cursor: (errorMsg !== "" || inputValue.trim().length < 2) ? 'not-allowed' : 'pointer' }}
+            style={{ 
+              padding: '8px 16px',
+              cursor: (errorMsg !== "" || inputValue.trim().length < 2) ? 'not-allowed' : 'pointer' 
+            }}
           >
             追加
           </button>
@@ -105,20 +105,28 @@ function App() {
         </div>
       </div>
 
-      {todos.length > 0 ? (
-        <ul>
+      <ul style={{ listStyle: 'none', padding: 0 }}>
+        <AnimatePresence>
           {todos.map((todo) => (
-            <TodoItem key={todo.id} todo={todo} onDelete={deleteTodo} onToggle={toggleTodo} />
+            <motion.li
+              key={todo.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+              style={{ marginBottom: '8px' }}
+            >
+              <TodoItem
+                todo={todo}
+                onDelete={deleteTodo}
+                onToggle={toggleTodo}
+              />
+            </motion.li>
           ))}
-        </ul>
-      ) : (
-        <p style={{ color: '#888' }}>タスクはありません。</p>
-      )}
-      
-      <hr />
-      <UserList />
+        </AnimatePresence>
+      </ul>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
